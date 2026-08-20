@@ -27,18 +27,45 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && menuOpen) {
+        setMenuOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [menuOpen])
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
   return (
-    <>
+    <header className="w-full">
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'py-3' : 'py-5'
+        className={`fixed top-0 left-0 right-0 z-50 w-full overflow-x-hidden transition-all duration-500 ${
+          scrolled
+            ? 'py-3 bg-[#F3E5D0]/90 backdrop-blur-md shadow-sm'
+            : 'py-5 bg-transparent'
         }`}
       >
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 flex items-center justify-between">
-          {/* LOGO — "DO" in cursive */}
-          <NavLink to="/" className="relative group">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between w-full">
+          {/* LOGO */}
+          <NavLink
+            to="/"
+            aria-label="Daddy Oyoyo Home"
+            className="relative group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F3E5D0] rounded-sm"
+          >
             <span
-              className="text-4xl lg:text-5xl text-amber-950 leading-none"
+              className="text-3xl sm:text-4xl lg:text-5xl text-amber-950 leading-none"
               style={{ fontFamily: "'Great Vibes', cursive" }}
             >
               DO
@@ -53,31 +80,35 @@ const Navbar = () => {
                 key={item.name}
                 to={item.path}
                 className={({ isActive }) =>
-                  `relative text-[11px] font-bold tracking-[0.25em] uppercase transition-all duration-300 group py-2 ${
+                  `relative text-[11px] font-bold tracking-[0.25em] uppercase transition-all duration-300 group py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F3E5D0] rounded-sm ${
                     isActive
                       ? 'text-amber-950'
                       : 'text-amber-900/70 hover:text-amber-950'
                   }`
                 }
               >
-                {item.name}
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-amber-800 transition-all duration-400 ease-out w-0 group-hover:w-full" />
-                {({ isActive }) =>
-                  isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-amber-900 w-3/4" />
-                  )
-                }
+                {({ isActive }) => (
+                  <>
+                    <span className="relative z-10">{item.name}</span>
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-amber-800 transition-all duration-500 ease-out w-0 group-hover:w-full" />
+                    {isActive && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-amber-900 w-3/4" />
+                    )}
+                  </>
+                )}
               </NavLink>
             ))}
           </div>
 
-          {/* MOBILE HAMBURGER — Animated lines */}
+          {/* MOBILE HAMBURGER */}
           <button
-            className="lg:hidden relative w-10 h-10 flex items-center justify-center text-amber-900 hover:text-amber-700 transition-colors duration-300"
+            className="lg:hidden relative w-11 h-11 shrink-0 flex items-center justify-center text-amber-900 hover:text-amber-700 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F3E5D0] rounded-sm"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
-            <div className="relative w-6 h-4 flex flex-col justify-between">
+            <div className="relative w-6 h-4 flex flex-col justify-between" aria-hidden="true">
               <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
               <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? 'opacity-0 scale-x-0' : ''}`} />
               <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
@@ -87,7 +118,14 @@ const Navbar = () => {
       </nav>
 
       {/* MOBILE FULL-SCREEN OVERLAY */}
-      <div className={`fixed inset-0 z-40 lg:hidden transition-all duration-700 ${menuOpen ? 'visible' : 'invisible'}`}>
+      <div
+        id="mobile-menu"
+        className={`fixed inset-0 z-40 lg:hidden transition-all duration-700 ${menuOpen ? 'visible' : 'invisible'}`}
+        aria-hidden={!menuOpen}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+      >
         <div
           className={`absolute inset-0 bg-[#F3E5D0]/95 backdrop-blur-2xl transition-opacity duration-500 ${menuOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setMenuOpen(false)}
@@ -98,13 +136,14 @@ const Navbar = () => {
           <div className={`absolute top-24 left-1/2 -translate-x-1/2 w-12 h-[1px] bg-amber-800/40 transition-all duration-700 delay-100 ${menuOpen ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`} />
 
           {/* Nav Links with stagger */}
-          <div className="flex flex-col items-center gap-6">
+          <nav className="flex flex-col items-center gap-6" aria-label="Mobile navigation">
             {navItems.map((item, i) => (
               <NavLink
                 key={item.name}
                 to={item.path}
+                onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `text-lg font-bold tracking-[0.3em] uppercase transition-all duration-500 ${
+                  `text-lg font-bold tracking-[0.3em] uppercase transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3E5D0] rounded-sm ${
                     isActive ? 'text-amber-950' : 'text-amber-800/60 hover:text-amber-950'
                   }`
                 }
@@ -114,10 +153,14 @@ const Navbar = () => {
                   transitionDelay: menuOpen ? `${150 + i * 60}ms` : '0ms',
                 }}
               >
-                {item.name}
+                {({ isActive }) => (
+                  <span className={isActive ? 'border-b-2 border-amber-900 pb-1' : ''}>
+                    {item.name}
+                  </span>
+                )}
               </NavLink>
             ))}
-          </div>
+          </nav>
 
           {/* Decorative line bottom */}
           <div className={`absolute bottom-24 left-1/2 -translate-x-1/2 w-12 h-[1px] bg-amber-800/40 transition-all duration-700 delay-500 ${menuOpen ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`} />
@@ -132,12 +175,13 @@ const Navbar = () => {
               transition: 'all 0.6s ease-out',
               transitionDelay: menuOpen ? '600ms' : '0ms',
             }}
+            aria-hidden="true"
           >
             DO
           </div>
         </div>
       </div>
-    </>
+    </header>
   )
 }
 

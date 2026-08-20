@@ -1,16 +1,17 @@
-import React from 'react'
 import Hero from '../components/Hero'
 import About from '../components/About'
 import Audience from '../components/Audience'
 import Content from '../components/Content'
+import Collaborations from '../components/Colaborations'
 const Home = () => {
   return (
-    <div>
-        <Hero />
-        <About/>
-        <Audience/>
-        <Content/>
-    </div>
+    <>
+      <Hero />
+      <About />
+      <Audience />
+      <Content />
+      <Collaborations />
+    </>
   )
 }
 
