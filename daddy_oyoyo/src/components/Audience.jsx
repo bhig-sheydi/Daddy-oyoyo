@@ -290,7 +290,7 @@ const Audience = () => {
               transition: 'all 0.8s ease-out',
             }}
           >
-          
+            W know you are interested in the numbers, so here they are
           </p>
           <h2
             style={{
