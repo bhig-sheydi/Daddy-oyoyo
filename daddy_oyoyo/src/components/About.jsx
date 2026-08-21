@@ -1,15 +1,34 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import aboutImage from '../assets/about page.png'
 
 const About = () => {
   const [phase, setPhase] = useState(0)
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const timersRef = useRef([])
 
   useEffect(() => {
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReducedMotion(mql.matches)
+    const handler = (e) => setReducedMotion(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setPhase(11)
+      return
+    }
     const beats = [300, 600, 900, 1200, 1500, 1800, 2200, 2600, 3000, 3500, 4000]
     beats.forEach((t, i) => {
-      setTimeout(() => setPhase(i + 1), t)
+      const id = setTimeout(() => setPhase(i + 1), t)
+      timersRef.current.push(id)
     })
-  }, [])
+    return () => {
+      timersRef.current.forEach(clearTimeout)
+      timersRef.current = []
+    }
+  }, [reducedMotion])
 
   const getMood = (p) => {
     if (p < 4) return { bg: '#1a1209', accent: '#d4a574', glow: 'rgba(212,165,116,0.2)', textOp: 0.9 }
@@ -26,29 +45,34 @@ const About = () => {
   const imageRotate = (Math.min(1, phase / 10) - 0.5) * 8
 
   return (
-    <div
-      className="relative h-screen w-full overflow-hidden transition-colors duration-1000 ease-out"
+    <section
+      className="relative min-h-screen w-full overflow-hidden transition-colors duration-1000 ease-out"
       style={{ backgroundColor: mood.bg }}
+      aria-label="About Daddy Oyoyo"
     >
-      {/* Ambient floating orbs */}
+      {/* Ambient floating orbs — clamped so they don't explode on tiny screens */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div
           className="absolute rounded-full transition-all duration-1000"
           style={{
-            width: '500px', height: '500px',
+            width: 'clamp(280px, 45vw, 500px)',
+            height: 'clamp(280px, 45vw, 500px)',
             background: mood.glow,
             filter: 'blur(90px)',
-            top: '-10%', left: '-10%',
+            top: '-5%',
+            left: '-5%',
             transform: `translateY(${phase * -8}px) scale(${1 + phase * 0.05})`,
           }}
         />
         <div
           className="absolute rounded-full transition-all duration-1000"
           style={{
-            width: '350px', height: '350px',
+            width: 'clamp(220px, 35vw, 350px)',
+            height: 'clamp(220px, 35vw, 350px)',
             background: mood.glow,
             filter: 'blur(70px)',
-            bottom: '-5%', right: '-5%',
+            bottom: '-5%',
+            right: '-5%',
             transform: `translateY(${phase * 5}px) scale(${1 + phase * 0.03})`,
           }}
         />
@@ -61,8 +85,8 @@ const About = () => {
           style={{
             color: mood.accent,
             opacity: phase > 2 ? 0.12 : 0,
-            width: 'clamp(320px, 42vw, 520px)',
-            height: 'clamp(320px, 42vw, 520px)',
+            width: 'clamp(280px, 42vw, 520px)',
+            height: 'clamp(280px, 42vw, 520px)',
             transform: `rotate(${phase * 5}deg) translate(-50%, -50%)`,
             left: '50%', top: '50%',
           }}
@@ -72,23 +96,23 @@ const About = () => {
           style={{
             color: mood.accent,
             opacity: phase > 2 ? 0.08 : 0,
-            width: 'clamp(360px, 48vw, 580px)',
-            height: 'clamp(360px, 48vw, 580px)',
+            width: 'clamp(320px, 48vw, 580px)',
+            height: 'clamp(320px, 48vw, 580px)',
             transform: `rotate(${-phase * 3}deg) translate(-50%, -50%)`,
             left: '50%', top: '50%',
           }}
         />
       </div>
 
-      {/* MAIN CONTENT — All within 100vh */}
-      <div className="relative z-10 h-full max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col justify-center">
+      {/* MAIN CONTENT */}
+      <div className="relative z-10 min-h-full max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col justify-center py-20 lg:py-0">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
 
           {/* LEFT: Text Story */}
           <div className="w-full lg:w-1/2 order-2 lg:order-1 space-y-5 lg:space-y-6">
-            
+
             <p
-              className="text-[10px] tracking-[0.5em] uppercase font-bold"
+              className="text-xs tracking-[0.5em] uppercase font-bold"
               style={{
                 color: mood.accent,
                 opacity: phase > 0 ? 0.5 : 0,
@@ -188,7 +212,7 @@ const About = () => {
                     <div className="text-xl lg:text-2xl font-bold" style={{ fontFamily: "'Cormorant Garamond', serif", color: mood.accent }}>
                       {stat.num}
                     </div>
-                    <div className="text-[8px] tracking-[0.3em] uppercase font-bold mt-0.5" style={{ color: mood.accent, opacity: 0.5 }}>
+                    <div className="text-xs tracking-[0.3em] uppercase font-bold mt-0.5" style={{ color: mood.accent, opacity: 0.5 }}>
                       {stat.label}
                     </div>
                   </div>
@@ -212,7 +236,7 @@ const About = () => {
           </div>
 
           {/* RIGHT: The Image */}
-          <div className="w-full lg:w-1/2 order-1 lg:order-2 flex justify-center items-center" style={{ perspective: '1000px' }}>
+          <div className="w-full lg:w-1/2 order-1 lg:order-2 flex justify-center items-center relative">
             <div
               className="relative overflow-hidden"
               style={{
@@ -234,6 +258,7 @@ const About = () => {
                   transform: `scale(${1.15 - phase * 0.015})`,
                   transition: 'transform 0.5s ease-out',
                 }}
+                loading="lazy"
               />
               <div
                 className="absolute inset-0"
@@ -246,7 +271,7 @@ const About = () => {
 
             {/* Vertical caption */}
             <div
-              className="absolute right-0 lg:right-4 top-1/2 -translate-y-1/2 hidden lg:block"
+              className="absolute right-2 lg:right-0 top-1/2 -translate-y-1/2 hidden lg:block"
               style={{
                 writingMode: 'vertical-rl',
                 textOrientation: 'mixed',
@@ -255,7 +280,7 @@ const About = () => {
                 transition: 'all 1s ease-out',
               }}
             >
-              <span className="text-[10px] tracking-[0.4em] uppercase font-bold" style={{ color: mood.accent }}>
+              <span className="text-xs tracking-[0.4em] uppercase font-bold" style={{ color: mood.accent }}>
                 The Man Behind The Laughs
               </span>
             </div>
@@ -272,12 +297,12 @@ const About = () => {
         }}
       >
         <div className="h-[1px] w-10 bg-current" style={{ color: mood.accent }} />
-        <span className="text-[9px] tracking-[0.4em] uppercase font-bold" style={{ color: mood.accent }}>
+        <span className="text-xs tracking-[0.4em] uppercase font-bold" style={{ color: mood.accent }}>
           Daddy Oyoyo
         </span>
         <div className="h-[1px] w-10 bg-current" style={{ color: mood.accent }} />
       </div>
-    </div>
+    </section>
   )
 }
 

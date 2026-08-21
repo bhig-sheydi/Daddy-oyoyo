@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const platforms = [
   { name: 'Instagram', handle: '@daddyoyoyo', followers: '80K+', icon: 'instagram', color: '#E4405F' },
@@ -37,7 +37,9 @@ const useCounter = (target, phase, delay) => {
   return count
 }
 
-const PlatformIcon = ({ name, className }) => {
+const PlatformIcon = ({ name, className, phase }) => {
+  // TikTok is black — invisible on dark backgrounds. Lighten it when bg is dark.
+  const tiktokColor = phase < 9 ? '#e8c9a0' : '#000000'
   const icons = {
     instagram: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
@@ -67,18 +69,46 @@ const PlatformIcon = ({ name, className }) => {
       </svg>
     ),
   }
-  return icons[name] || null
+  const icon = icons[name]
+  if (!icon) return null
+  if (name === 'tiktok') {
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" className={className} style={{ color: tiktokColor }}>
+        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.89 2.89 2.89 0 012.88-2.89c.2 0 .39.02.58.06V9.15a6.33 6.33 0 00-.58-.03A6.34 6.34 0 003.11 15.46a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.83a8.26 8.26 0 004.83 1.55V7.08a4.85 4.85 0 01-1.02-.39z"/>
+      </svg>
+    )
+  }
+  return icon
 }
 
 const Audience = () => {
   const [phase, setPhase] = useState(0)
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const timersRef = useRef([])
 
   useEffect(() => {
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReducedMotion(mql.matches)
+    const handler = (e) => setReducedMotion(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setPhase(13)
+      return
+    }
     const beats = [200, 500, 800, 1100, 1400, 1700, 2000, 2400, 2800, 3200, 3600, 4000, 4400]
     beats.forEach((t, i) => {
-      setTimeout(() => setPhase(i + 1), t)
+      const id = setTimeout(() => setPhase(i + 1), t)
+      timersRef.current.push(id)
     })
-  }, [])
+    return () => {
+      timersRef.current.forEach(clearTimeout)
+      timersRef.current = []
+    }
+  }, [reducedMotion])
 
   const getMood = (p) => {
     if (p < 3) return { bg: '#1a1209', accent: '#d4a574', glow: 'rgba(212,165,116,0.2)', cardBg: 'rgba(212,165,116,0.06)' }
@@ -97,29 +127,34 @@ const Audience = () => {
   const counterValues = [reachCount, avgViewsCount, highViewsCount, engagementCount]
 
   return (
-    <div
-      className="relative h-screen w-full overflow-hidden transition-colors duration-1000 ease-out"
+    <section
+      className="relative min-h-screen w-full overflow-hidden transition-colors duration-1000 ease-out"
       style={{ backgroundColor: mood.bg }}
+      aria-label="Audience and Social Reach"
     >
-      {/* Ambient orbs */}
+      {/* Ambient orbs — clamped to prevent spill */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div
           className="absolute rounded-full transition-all duration-1000"
           style={{
-            width: '600px', height: '600px',
+            width: 'clamp(300px, 50vw, 600px)',
+            height: 'clamp(300px, 50vw, 600px)',
             background: mood.glow,
             filter: 'blur(100px)',
-            top: '-20%', right: '-10%',
+            top: '-15%',
+            right: '-5%',
             transform: `scale(${1 + phase * 0.04})`,
           }}
         />
         <div
           className="absolute rounded-full transition-all duration-1000"
           style={{
-            width: '400px', height: '400px',
+            width: 'clamp(220px, 35vw, 400px)',
+            height: 'clamp(220px, 35vw, 400px)',
             background: mood.glow,
             filter: 'blur(80px)',
-            bottom: '-15%', left: '-5%',
+            bottom: '-10%',
+            left: '-5%',
             transform: `scale(${1 + phase * 0.03})`,
           }}
         />
@@ -136,12 +171,12 @@ const Audience = () => {
       />
 
       {/* MAIN CONTENT */}
-      <div className="relative z-10 h-full max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col justify-center py-6">
-        
+      <div className="relative z-10 min-h-full max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col justify-center py-16 lg:py-6 pb-20">
+
         {/* SOCIAL REACH HEADER */}
         <div className="text-center mb-5 lg:mb-6">
           <p
-            className="text-[10px] tracking-[0.5em] uppercase font-bold mb-2"
+            className="text-xs tracking-[0.5em] uppercase font-bold mb-2"
             style={{
               color: mood.accent,
               opacity: phase > 0 ? 0.5 : 0,
@@ -201,7 +236,7 @@ const Audience = () => {
                     className="w-9 h-9 lg:w-11 lg:h-11 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110"
                     style={{ background: `${platform.color}15`, color: platform.color }}
                   >
-                    <PlatformIcon name={platform.icon} className="w-4 h-4 lg:w-5 lg:h-5" />
+                    <PlatformIcon name={platform.icon} className="w-4 h-4 lg:w-5 lg:h-5" phase={phase} />
                   </div>
                 </div>
 
@@ -213,7 +248,7 @@ const Audience = () => {
                 </div>
 
                 <div
-                  className="text-center text-[9px] tracking-[0.15em] uppercase font-bold mt-0.5"
+                  className="text-center text-xs tracking-[0.15em] uppercase font-bold mt-0.5"
                   style={{ color: mood.accent, opacity: 0.6 }}
                 >
                   {platform.name}
@@ -247,7 +282,7 @@ const Audience = () => {
         {/* AUDIENCE & PERFORMANCE HEADER */}
         <div className="text-center mb-3 lg:mb-4">
           <p
-            className="text-[10px] tracking-[0.5em] uppercase font-bold mb-1.5"
+            className="text-xs tracking-[0.5em] uppercase font-bold mb-1.5"
             style={{
               color: mood.accent,
               opacity: phase > 6 ? 0.5 : 0,
@@ -304,14 +339,14 @@ const Audience = () => {
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className="text-center px-4 py-3 lg:px-6 lg:py-4 rounded-xl border"
+              className="text-center px-3 py-3 lg:px-6 lg:py-4 rounded-xl border"
               style={{
                 background: mood.cardBg,
                 borderColor: `${mood.accent}12`,
                 opacity: phase > 9 + i * 0.25 ? 1 : 0,
                 transform: `translateY(${phase > 9 + i * 0.25 ? 0 : 40}px) scale(${phase > 9 + i * 0.25 ? 1 : 0.9})`,
                 transition: `all 0.9s cubic-bezier(0.22, 1, 0.36, 1) ${i * 100}ms`,
-                minWidth: 'clamp(120px, 18vw, 180px)',
+                minWidth: 'clamp(100px, 22vw, 180px)',
               }}
             >
               {/* Big Number */}
@@ -328,10 +363,10 @@ const Audience = () => {
                 <span style={{ fontSize: '0.55em', opacity: 0.8 }}>{stat.suffix}</span>
               </div>
 
-              {/* Label — attached with border-top separator */}
+              {/* Label */}
               <div className="mt-2 pt-2" style={{ borderTop: `1px solid ${mood.accent}15` }}>
                 <div
-                  className="text-[9px] lg:text-[10px] tracking-[0.2em] uppercase font-bold"
+                  className="text-xs lg:text-xs tracking-[0.2em] uppercase font-bold"
                   style={{ color: mood.accent, opacity: 0.7 }}
                 >
                   {stat.label}
@@ -351,24 +386,24 @@ const Audience = () => {
             </div>
           ))}
         </div>
-
-        {/* Bottom Cursive Signature */}
-        <div
-          className="absolute bottom-5 left-1/2 -translate-x-1/2"
-          style={{
-            opacity: phase > 12 ? 0.15 : 0,
-            transition: 'opacity 1.5s ease',
-          }}
-        >
-          <span
-            className="text-4xl"
-            style={{ fontFamily: "'Great Vibes', cursive", color: mood.accent }}
-          >
-            DO
-          </span>
-        </div>
       </div>
-    </div>
+
+      {/* Bottom Cursive Signature — sits in padding, not absolute */}
+      <div
+        className="relative z-10 text-center pb-8"
+        style={{
+          opacity: phase > 12 ? 0.15 : 0,
+          transition: 'opacity 1.5s ease',
+        }}
+      >
+        <span
+          className="text-4xl"
+          style={{ fontFamily: "'Great Vibes', cursive", color: mood.accent }}
+        >
+          DO
+        </span>
+      </div>
+    </section>
   )
 }
 
