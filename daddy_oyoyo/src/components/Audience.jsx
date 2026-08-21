@@ -290,7 +290,7 @@ const Audience = () => {
               transition: 'all 0.8s ease-out',
             }}
           >
-            This Is Where Brands Start Getting Interested
+          
           </p>
           <h2
             style={{
