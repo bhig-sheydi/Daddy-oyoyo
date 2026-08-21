@@ -1,21 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 
 const brands = [
-  { name: 'Dstv', category: 'Entertainment' },
-  { name: 'BBN', category: 'Reality TV' },
-  { name: 'Axe', category: 'Lifestyle' },
-  { name: 'Indrive', category: 'Transport' },
-  { name: 'Fan Yogo', category: 'Food & Beverage' },
-  { name: 'Infinix', category: 'Technology' },
+  { name: 'Dstv', category: 'Entertainment', logo: 'https://kimi-web-img.kimi.ai/img/upload.wikimedia.org/9f8f6ef2270c4749ee241ff057eb11b79df973c4.png' },
+  { name: 'BBN', category: 'Reality TV', logo: 'https://kimi-web-img.kimi.ai/img/www.pngfind.com/b272030bea28e05b1dcb3ac908e5e9660452c8fb.png' },
+  { name: 'Axe', category: 'Lifestyle', logo: 'https://kimi-web-img.kimi.ai/img/logos-world.net/29754c8634016af540d46d838bb829d9d33a67a5.jpg' },
+  { name: 'Indrive', category: 'Transport', logo: 'https://kimi-web-img.kimi.ai/img/logo-teka.com/a7de3c46d57e982bf9fea1652a19bb8883136db1.png' },
+  { name: 'Fan Yogo', category: 'Food & Beverage', logo: 'https://kimi-web-img.kimi.ai/img/smartmedia.digital4danone.com/44c7c9eab70a3d4ac08659b4ecda63c17ed259f5' },
+  { name: 'Infinix', category: 'Technology', logo: 'https://kimi-web-img.kimi.ai/img/www.freepng.com/8a2bc020daedecb5d75c4876887cf225729f8d77.jpg' },
   { name: 'Moon Republic Academy', category: 'Education' },
-  { name: 'Indomie', category: 'Food' },
+  { name: 'Indomie', category: 'Food', logo: 'https://kimi-web-img.kimi.ai/img/upload.wikimedia.org/2c68b3669b1d58dd45c717e56368807a44592999.png' },
   { name: 'Glover', category: 'Lifestyle' },
   { name: 'OgaBasssey', category: 'Entertainment' },
   { name: 'Tradewithjayy', category: 'Finance' },
-  { name: 'Rites Food', category: 'Food' },
-  { name: 'Temu', category: 'E-Commerce' },
+  { name: 'Rites Food', category: 'Food', logo: 'https://kimi-web-img.kimi.ai/img/ppiinternational.com/98295bbba3f44c2d0640d58ac6acae173b721db9.png' },
+  { name: 'Temu', category: 'E-Commerce', logo: 'https://kimi-web-img.kimi.ai/img/crystalpng.com/edebc5eb39e406b0f38025bbd7912ac35d58520c.png' },
   { name: 'Zowe Foods', category: 'Food' },
-  { name: 'Itel', category: 'Technology' },
+  { name: 'Itel', category: 'Technology', logo: 'https://kimi-web-img.kimi.ai/img/upload.wikimedia.org/e68e4b22378706d474f5485483041ac22051c554.png' },
   { name: 'Pandar', category: 'Lifestyle' },
   { name: 'Sunset Drinks', category: 'Beverage' },
   { name: 'Adekunle Gold & Qing Madi', category: 'Music' },
@@ -71,7 +71,7 @@ const Collaborations = () => {
       style={{ backgroundColor: '#F3E5D0', minHeight: '220vh' }}
       aria-label="Brand Collaborations"
     >
-      {/* Ambient shapes — absolute (not fixed) so they stay inside overflow-hidden */}
+      {/* Ambient shapes */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div
           className="absolute rounded-full bg-amber-900/5"
@@ -144,7 +144,6 @@ const Collaborations = () => {
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 pb-20">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
           {brands.map((brand, i) => {
-            const isLeft = i % 2 === 0
             const start = 0.12 + i * 0.035
             const end = start + 0.10
             const r = reveal(start, end)
@@ -160,16 +159,25 @@ const Collaborations = () => {
                   transition: 'all 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
                 }}
               >
-                <div className="group relative flex flex-col items-center justify-center p-5 lg:p-7 rounded-2xl bg-white/40 border border-amber-900/10 hover:bg-white/60 hover:border-amber-900/15 hover:-translate-y-1 hover:shadow-lg transition-all duration-500 min-h-[130px]">
+                <div className="group relative flex flex-col items-center justify-center p-5 lg:p-7 rounded-2xl bg-white/40 border border-amber-900/10 hover:bg-white/60 hover:border-amber-900/15 hover:-translate-y-1 hover:shadow-lg transition-all duration-500 min-h-[150px]">
 
-                  {/* Logo placeholder */}
-                  <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-xl bg-amber-900/5 flex items-center justify-center mb-2 group-hover:bg-amber-900/10 transition-colors duration-300">
-                    <span 
-                      className="text-base lg:text-lg font-bold text-amber-900/40 text-center px-1 leading-tight"
-                      style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                    >
-                      {brand.name.charAt(0)}
-                    </span>
+                  {/* Logo: image if available, else letter */}
+                  <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-xl bg-amber-900/5 flex items-center justify-center mb-2 group-hover:bg-amber-900/10 transition-colors duration-300 overflow-hidden">
+                    {brand.logo ? (
+                      <img
+                        src={brand.logo}
+                        alt={`${brand.name} logo`}
+                        className="w-full h-full object-contain p-1"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span 
+                        className="text-base lg:text-lg font-bold text-amber-900/40 text-center px-1 leading-tight"
+                        style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                      >
+                        {brand.name.charAt(0)}
+                      </span>
+                    )}
                   </div>
 
                   <h3 

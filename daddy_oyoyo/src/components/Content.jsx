@@ -69,34 +69,25 @@ const Content = () => {
   }
 
   // Heading zips out left, then zips back in from left
-  const getHeadingStyle = () => {
-    if (progress < 0.20) {
-      return { transform: 'translateX(0)', opacity: 1 }
-    }
-    if (progress < 0.28) {
-      const t = (progress - 0.20) / 0.08
-      return {
-        transform: `translateX(${-t * 120}vw)`,
-        opacity: 1 - t * 0.3,
-      }
-    }
-    if (progress < 0.72) {
-      return { transform: 'translateX(-120vw)', opacity: 0 }
-    }
-    if (progress < 0.80) {
-      const t = (progress - 0.72) / 0.08
-      return {
-        transform: `translateX(${(1 - t) * -120}vw)`,
-        opacity: 0.3 + t * 0.7,
-      }
-    }
+ const getHeadingStyle = () => {
+  if (progress < 0.20) {
     return { transform: 'translateX(0)', opacity: 1 }
   }
+  if (progress < 0.28) {
+    const t = (progress - 0.20) / 0.08
+    return {
+      transform: `translateX(${-t * 120}vw)`,
+      opacity: 1 - t * 0.3,
+    }
+  }
+  // After it leaves, it stays gone — no return
+  return { transform: 'translateX(-120vw)', opacity: 0 }
+}
 
   const headingStyle = getHeadingStyle()
 
   return (
-    <div ref={containerRef} style={{ backgroundColor: '#F3E5D0', minHeight: '300vh' }}>
+    <div ref={containerRef} style={{ backgroundColor: '#F3E5D0', minHeight: '200vh' }}>
       {/* Ambient floating shapes */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div
@@ -122,7 +113,7 @@ const Content = () => {
       </div>
 
       {/* STICKY HERO — Heading zips in/out */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center px-6">
+      <div className="sticky top-0 h-full w-full overflow-hidden flex items-center justify-center px-6">
         <div
           className="relative z-10 max-w-5xl mx-auto text-center w-full"
           style={{
