@@ -1,28 +1,18 @@
-// Collaborations.jsx
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-const brands = [
-  { name: 'Dstv', category: 'Entertainment', logo: 'https://kimi-web-img.kimi.ai/img/upload.wikimedia.org/9f8f6ef2270c4749ee241ff057eb11b79df973c4.png' },
-  { name: 'BBN', category: 'Reality TV', logo: 'https://kimi-web-img.kimi.ai/img/www.pngfind.com/b272030bea28e05b1dcb3ac908e5e9660452c8fb.png' },
-  { name: 'Axe', category: 'Lifestyle', logo: 'https://kimi-web-img.kimi.ai/img/logos-world.net/29754c8634016af540d46d838bb829d9d33a67a5.jpg' },
-  { name: 'Indrive', category: 'Transport', logo: 'https://kimi-web-img.kimi.ai/img/logo-teka.com/a7de3c46d57e982bf9fea1652a19bb8883136db1.png' },
-  { name: 'Fan Yogo', category: 'Food & Beverage', logo: 'https://kimi-web-img.kimi.ai/img/smartmedia.digital4danone.com/44c7c9eab70a3d4ac08659b4ecda63c17ed259f5' },
-  { name: 'Infinix', category: 'Technology', logo: 'https://kimi-web-img.kimi.ai/img/www.freepng.com/8a2bc020daedecb5d75c4876887cf225729f8d77.jpg' },
-  { name: 'Moon Republic Academy', category: 'Education' },
-  { name: 'Indomie', category: 'Food', logo: 'https://kimi-web-img.kimi.ai/img/upload.wikimedia.org/2c68b3669b1d58dd45c717e56368807a44592999.png' },
-  { name: 'Glover', category: 'Lifestyle' },
-  { name: 'OgaBasssey', category: 'Entertainment' },
-  { name: 'Tradewithjayy', category: 'Finance' },
-  { name: 'Rites Food', category: 'Food', logo: 'https://kimi-web-img.kimi.ai/img/ppiinternational.com/98295bbba3f44c2d0640d58ac6acae173b721db9.png' },
-  { name: 'Temu', category: 'E-Commerce', logo: 'https://kimi-web-img.kimi.ai/img/crystalpng.com/edebc5eb39e406b0f38025bbd7912ac35d58520c.png' },
-  { name: 'Zowe Foods', category: 'Food' },
-  { name: 'Itel', category: 'Technology', logo: 'https://kimi-web-img.kimi.ai/img/upload.wikimedia.org/e68e4b22378706d474f5485483041ac22051c554.png' },
-  { name: 'Pandar', category: 'Lifestyle' },
-  { name: 'Sunset Drinks', category: 'Beverage' },
-  { name: 'Adekunle Gold & Qing Madi', category: 'Music' },
+const services = [
+  'Brand Campaigns',
+  'Sponsored Content',
+  'Product Launches',
+  'Event Appearances',
+  'Long-Term Partnerships',
+  'PR & Media',
+  'Podcasts',
+  'Interviews',
+  'Creator Collaborations',
 ]
 
-const Collaborations = () => {
+const Media = () => {
   const containerRef = useRef(null)
   const [progress, setProgress] = useState(0)
   const [reducedMotion, setReducedMotion] = useState(false)
@@ -93,7 +83,6 @@ const Collaborations = () => {
     return (progress - start) / (end - start)
   }
 
-  // Mobile: heading stays visible longer before fading
   const fadeStart = isMobile ? 0.30 : 0.18
   const fadeSpeed = isMobile ? 4 : 6
   const moveY = isMobile ? 100 : 80
@@ -104,7 +93,7 @@ const Collaborations = () => {
       ref={containerRef}
       className="relative w-full overflow-hidden"
       style={{ backgroundColor: '#F3E5D0', minHeight: '220vh' }}
-      aria-label="Brand Collaborations"
+      aria-label="Media and Appearances"
     >
       {/* Ambient shapes */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -147,19 +136,19 @@ const Collaborations = () => {
           }}
         >
           <p className="text-xs tracking-[0.5em] uppercase font-bold text-amber-800/50 mb-4">
-            Trusted By Industry Leaders
+            Available For
           </p>
           <h1
             className="font-bold text-amber-950 leading-tight"
             style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 6vw, 4rem)' }}
           >
-            BRANDS WE'VE
+            MEDIA &
           </h1>
           <h2
             className="text-amber-900 mt-1"
             style={{ fontFamily: "'Great Vibes', cursive", fontSize: 'clamp(2.5rem, 7vw, 5rem)' }}
           >
-            Collaborated With
+            Appearances
           </h2>
           <div className="mx-auto mt-6 h-[1px] bg-amber-900/20 w-20" />
         </div>
@@ -169,23 +158,23 @@ const Collaborations = () => {
           style={{ opacity: Math.max(0, 0.5 - progress * 2), transition: 'opacity 0.5s' }}
         >
           <span className="text-xs tracking-[0.4em] uppercase font-bold text-amber-800/40">
-            Scroll to see partners
+            Scroll to explore
           </span>
           <div className="w-[1px] h-6 bg-amber-900/20 animate-pulse" />
         </div>
       </div>
 
-      {/* BRANDS GRID */}
+      {/* SERVICES GRID */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 pb-20">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
-          {brands.map((brand, i) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+          {services.map((service, i) => {
             const start = 0.12 + i * 0.035
             const end = start + 0.10
             const r = reveal(start, end)
 
             return (
               <div
-                key={brand.name}
+                key={service}
                 style={{
                   opacity: reducedMotion ? 1 : r,
                   transform: reducedMotion
@@ -194,37 +183,21 @@ const Collaborations = () => {
                   transition: 'all 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
                 }}
               >
-                <div className="group relative flex flex-col items-center justify-center p-5 lg:p-7 rounded-2xl bg-white/40 border border-amber-900/10 hover:bg-white/60 hover:border-amber-900/15 hover:-translate-y-1 hover:shadow-lg transition-all duration-500 min-h-[150px]">
+                <div className="group relative flex items-center gap-4 p-5 lg:p-6 rounded-2xl bg-white/50 border border-amber-900/10 hover:bg-white/70 hover:border-amber-900/15 hover:-translate-y-1 hover:shadow-lg transition-all duration-500 min-h-[80px]">
 
-                  <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-xl bg-amber-900/5 flex items-center justify-center mb-2 group-hover:bg-amber-900/10 transition-colors duration-300 overflow-hidden">
-                    {brand.logo ? (
-                      <img
-                        src={brand.logo}
-                        alt={`${brand.name} logo`}
-                        className="w-full h-full object-contain p-1"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span 
-                        className="text-base lg:text-lg font-bold text-amber-900/40 text-center px-1 leading-tight"
-                        style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                      >
-                        {brand.name.charAt(0)}
-                      </span>
-                    )}
-                  </div>
+                  {/* Bullet accent */}
+                  <div
+                    className="w-2 h-2 rounded-full bg-amber-800/30 group-hover:bg-amber-800/50 group-hover:scale-125 transition-all duration-300 flex-shrink-0"
+                  />
 
-                  <h3 
-                    className="text-sm lg:text-base font-bold text-amber-950 text-center leading-tight"
+                  <h3
+                    className="text-sm lg:text-base font-bold text-amber-950 leading-tight"
                     style={{ fontFamily: "'Cormorant Garamond', serif" }}
                   >
-                    {brand.name}
+                    {service}
                   </h3>
 
-                  <span className="text-xs tracking-[0.2em] uppercase font-bold text-amber-800/40 mt-1">
-                    {brand.category}
-                  </span>
-
+                  {/* Bottom hover accent line */}
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-amber-800/30 rounded-full transition-all duration-500 w-0 group-hover:w-3/4" />
                 </div>
               </div>
@@ -232,6 +205,7 @@ const Collaborations = () => {
           })}
         </div>
 
+        {/* Bottom CTA */}
         <div
           className="text-center mt-12"
           style={{
@@ -243,7 +217,7 @@ const Collaborations = () => {
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="h-[1px] w-12 bg-amber-900/20" />
             <span className="text-xs tracking-[0.4em] uppercase font-bold text-amber-800/40">
-              And many more
+              Let's work together
             </span>
             <div className="h-[1px] w-12 bg-amber-900/20" />
           </div>
@@ -256,4 +230,4 @@ const Collaborations = () => {
   )
 }
 
-export default Collaborations
+export default Media

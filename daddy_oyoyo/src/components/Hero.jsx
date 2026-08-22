@@ -92,17 +92,41 @@ const Hero = () => {
           >
             Digital Creator • Entertainer • Personality
           </p>
+          
+          {/* BUTTONS */}
           <div
+            className="flex flex-col sm:flex-row items-center gap-4 lg:gap-5"
             style={{
               transform: loaded ? 'translateY(0)' : 'translateY(60px)',
               opacity: loaded ? 1 : 0,
               transition: 'transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.7s, opacity 0.8s ease-out 0.7s',
             }}
           >
-            <button className={`px-8 py-3 rounded-full font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 ${ACCENT_COLOR}`}>
-              Follow Journey
-            </button>
+            <a
+              href="#contact"
+              className={`px-7 py-3 rounded-full font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 text-sm tracking-wide ${ACCENT_COLOR}`}
+            >
+              WORK WITH DADDY OYOYO
+            </a>
+            <a
+              href="#socials"
+              className="px-7 py-3 rounded-full font-semibold text-amber-900 bg-white/50 border border-amber-900/15 shadow-lg hover:shadow-xl hover:bg-white/70 transition-all hover:scale-105 text-sm tracking-wide backdrop-blur-sm"
+            >
+              VIEW SOCIALS
+            </a>
           </div>
+
+          {/* Managed by */}
+          <p
+            className="text-[10px] tracking-[0.3em] uppercase font-bold text-amber-800/40 pt-2"
+            style={{
+              transform: loaded ? 'translateY(0)' : 'translateY(40px)',
+              opacity: loaded ? 1 : 0,
+              transition: 'transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.9s, opacity 0.8s ease-out 0.9s',
+            }}
+          >
+            Managed by Zoey Vincent
+          </p>
         </div>
       </div>
     </div>

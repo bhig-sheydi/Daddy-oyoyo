@@ -30,14 +30,13 @@ const About = () => {
     }
   }, [reducedMotion])
 
-  const getMood = (p) => {
-    if (p < 4) return { bg: '#1a1209', accent: '#d4a574', glow: 'rgba(212,165,116,0.2)', textOp: 0.9 }
-    if (p < 7) return { bg: '#2d1f12', accent: '#e8c9a0', glow: 'rgba(232,201,160,0.25)', textOp: 0.95 }
-    if (p < 10) return { bg: '#3d2b1a', accent: '#f3e5d0', glow: 'rgba(243,229,208,0.3)', textOp: 1 }
-    return { bg: '#F3E5D0', accent: '#5c3d1e', glow: 'rgba(184,212,227,0.25)', textOp: 1 }
+  // Locked to the initial dark mood — no color transition
+  const mood = {
+    bg: '#1a1209',
+    accent: '#d4a574',
+    glow: 'rgba(212,165,116,0.2)',
+    textOp: 0.9,
   }
-
-  const mood = getMood(phase)
 
   const imageScale = 0.5 + Math.min(1, phase / 8) * 0.5
   const imageBlur = Math.max(0, 10 - phase * 1.2)
@@ -50,7 +49,7 @@ const About = () => {
       style={{ backgroundColor: mood.bg }}
       aria-label="About Daddy Oyoyo"
     >
-      {/* Ambient floating orbs — clamped so they don't explode on tiny screens */}
+      {/* Ambient floating orbs */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div
           className="absolute rounded-full transition-all duration-1000"
