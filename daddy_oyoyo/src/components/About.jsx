@@ -201,22 +201,7 @@ const About = () => {
                 transition: 'all 1s cubic-bezier(0.22, 1, 0.36, 1)',
               }}
             >
-              <div className="flex gap-8">
-                {[
-                  { num: '1M+', label: 'Followers' },
-                  { num: '500+', label: 'Videos' },
-                  { num: 'NG', label: 'Nigeria' },
-                ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <div className="text-xl lg:text-2xl font-bold" style={{ fontFamily: "'Cormorant Garamond', serif", color: mood.accent }}>
-                      {stat.num}
-                    </div>
-                    <div className="text-xs tracking-[0.3em] uppercase font-bold mt-0.5" style={{ color: mood.accent, opacity: 0.5 }}>
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
+
 
               <div className="hidden sm:block w-[1px] h-10 bg-current" style={{ color: mood.accent, opacity: 0.2 }} />
 
